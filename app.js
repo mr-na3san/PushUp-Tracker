@@ -988,4 +988,16 @@ async function checkCameraPermission() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', init);
+window.addEventListener('load', () => {
+  if (typeof Pose === 'undefined' || typeof Camera === 'undefined') {
+    document.getElementById('splashScreen').classList.add('hidden');
+    document.getElementById('noCameraMsg').innerHTML = `
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <p>Failed to load MediaPipe.</p>
+      <p style="font-size:11px;opacity:0.6">Check your internet connection and reload.</p>
+      <button class="start-camera-btn" onclick="location.reload()">Reload</button>`;
+    document.getElementById('noCameraMsg').classList.remove('hidden');
+    return;
+  }
+  init();
+});
