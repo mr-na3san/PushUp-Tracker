@@ -954,19 +954,24 @@ function hideSplash() {
   setTimeout(() => {
     const splash = document.getElementById('splashScreen');
     splash.classList.add('hidden');
-  }, 2000);
+  }, 1200);
 }
 
 async function init() {
-  loadSettings();
-  initUI();
-  initPWA();
-  renderStats();
-  hideSplash();
+  try {
+    loadSettings();
+    initUI();
+    initPWA();
+    renderStats();
 
-  const hasPermission = await checkCameraPermission();
-  if (hasPermission) {
-    initCamera();
+    const hasPermission = await checkCameraPermission();
+    if (hasPermission) {
+      initCamera();
+    }
+  } catch (err) {
+    console.error('Init error:', err);
+  } finally {
+    hideSplash();
   }
 }
 
