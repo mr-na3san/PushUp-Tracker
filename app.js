@@ -58,7 +58,43 @@ let fpsFrameCount = 0;
 let fpsLastTime = 0;
 let sessionTimerInterval = null;
 
-function loadSettings() {
+function showConfirm({ title, desc, danger = false, onConfirm }) {
+  const modal = document.getElementById('confirmModal');
+  const iconWrap = document.getElementById('confirmIconWrap');
+  const okBtn = document.getElementById('confirmOkBtn');
+
+  document.getElementById('confirmTitle').textContent = title;
+  document.getElementById('confirmDesc').textContent = desc;
+
+  if (danger) {
+    iconWrap.classList.add('danger');
+    document.getElementById('confirmIcon').innerHTML = '<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>';
+    okBtn.className = 'ctrl-btn confirm-danger';
+  } else {
+    iconWrap.classList.remove('danger');
+    document.getElementById('confirmIcon').innerHTML = '<path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>';
+    okBtn.className = 'ctrl-btn primary';
+  }
+
+  modal.classList.add('open');
+
+  const cleanup = () => {
+    modal.classList.remove('open');
+    okBtn.removeEventListener('click', handleOk);
+    document.getElementById('confirmCancelBtn').removeEventListener('click', handleCancel);
+    modal.removeEventListener('click', handleOverlay);
+  };
+
+  const handleOk = () => { cleanup(); onConfirm(); };
+  const handleCancel = () => cleanup();
+  const handleOverlay = (e) => { if (e.target === modal) cleanup(); };
+
+  okBtn.addEventListener('click', handleOk);
+  document.getElementById('confirmCancelBtn').addEventListener('click', handleCancel);
+  modal.addEventListener('click', handleOverlay);
+}
+
+
   try {
     const stored = localStorage.getItem(storageKey + '_settings');
     if (stored) Object.assign(settings, JSON.parse(stored));
@@ -624,7 +660,19 @@ function saveSession() {
 }
 
 function resetSession() {
-  if (appState.repCount > 0 && !confirm('Reset current session? Progress will be lost.')) return;
+  if (appState.repCount > 0) {
+    showConfirm({
+      title: 'Reset Session?',
+      desc: 'Current progress and rep count will be lost.',
+      danger: false,
+      onConfirm: () => doReset()
+    });
+    return;
+  }
+  doReset();
+}
+
+function doReset() {
   if (appState.isRunning) stopSession();
 
   appState.repCount = 0;
@@ -793,10 +841,15 @@ function initUI() {
   });
 
   document.getElementById('clearStatsBtn').addEventListener('click', () => {
-    if (!confirm('Clear all statistics and session history? This cannot be undone.')) return;
-    const stats = getDefaultStats();
-    saveStats(stats);
-    renderStats();
+    showConfirm({
+      title: 'Clear All Stats?',
+      desc: 'All session history and statistics will be permanently deleted.',
+      danger: true,
+      onConfirm: () => {
+        saveStats(getDefaultStats());
+        renderStats();
+      }
+    });
   });
 
   document.getElementById('sensitivitySlider').addEventListener('input', (e) => {

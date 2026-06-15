@@ -1168,6 +1168,85 @@ html, body {
   display: none !important;
 }
 
+.confirm-modal {
+  padding: 32px 24px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0;
+  border-radius: 24px;
+  max-width: 320px;
+  margin: auto;
+}
+
+.confirm-icon-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(249,115,22,0.12);
+  border: 1px solid rgba(249,115,22,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.confirm-icon-wrap svg {
+  width: 28px;
+  height: 28px;
+  stroke: var(--accent-orange);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.confirm-icon-wrap.danger {
+  background: rgba(239,68,68,0.12);
+  border-color: rgba(239,68,68,0.25);
+}
+
+.confirm-icon-wrap.danger svg {
+  stroke: var(--accent-red);
+}
+
+.confirm-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.confirm-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 28px;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.confirm-actions .ctrl-btn {
+  flex: 1;
+  padding: 12px;
+  font-size: 14px;
+}
+
+.ctrl-btn.confirm-danger {
+  background: rgba(239,68,68,0.15);
+  color: var(--accent-red);
+  border: 1px solid rgba(239,68,68,0.3);
+}
+
+.ctrl-btn.confirm-danger:hover {
+  background: rgba(239,68,68,0.28);
+}
+
 @media (min-width: 480px) {
   .metrics-grid {
     grid-template-columns: repeat(4, 1fr);
